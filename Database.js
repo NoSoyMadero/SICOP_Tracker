@@ -89,7 +89,7 @@ function cleanOldArchives() {
   const yearFolders = rootFolder.getFolders();
   while (yearFolders.hasNext()) {
     const yearFolder = yearFolders.next();
-    const folderYear = parseInt(yearFolder.getName());
+    const folderYear = Number.parseInt(yearFolder.getName());
     
     if (folderYear < cutoffYear) {
       yearFolder.setTrashed(true);
@@ -98,7 +98,7 @@ function cleanOldArchives() {
       const monthFolders = yearFolder.getFolders();
       while (monthFolders.hasNext()) {
         const monthFolder = monthFolders.next();
-        const folderMonth = parseInt(monthFolder.getName());
+        const folderMonth = Number.parseInt(monthFolder.getName());
         
         if (folderMonth < cutoffMonth) {
           monthFolder.setTrashed(true);
@@ -138,7 +138,7 @@ function downloadLargeZipChunked(yearStr, monthStr, targetFolderId) {
   const contentRange = headers['Content-Range'] || headers['content-range'];
   
   if (!contentRange) throw new Error("Could not determine file size from server.");
-  const totalSize = parseInt(contentRange.split('/')[1]);
+  const totalSize = Number.parseInt(contentRange.split('/')[1]);
 
   const token = ScriptApp.getOAuthToken();
   const metadata = { name: fileName, parents: [targetFolderId] };
@@ -190,7 +190,7 @@ async function extractLargeZip(zipFileId, targetFolderId) {
   const metaResponse = UrlFetchApp.fetch(`https://www.googleapis.com/drive/v3/files/${zipFileId}?fields=size`, {
     headers: { "Authorization": "Bearer " + token }
   });
-  const totalSize = parseInt(JSON.parse(metaResponse.getContentText()).size);
+  const totalSize = Number.parseInt(JSON.parse(metaResponse.getContentText()).size);
   
   const zipData = new Uint8Array(totalSize);
   const chunkSize = 10 * 1024 * 1024;
@@ -390,7 +390,7 @@ function searchLargeCsvChunked(file, searchString, findAll = false) {
     
     const headers = response.getHeaders();
     const contentLength = headers['Content-Length'] || headers['content-length'];
-    if (!contentLength || parseInt(contentLength) < chunkSize) {
+    if (!contentLength || Number.parseInt(contentLength) < chunkSize) {
       if (overlap.includes(searchString)) matches.push(overlap);
       break;
     }
